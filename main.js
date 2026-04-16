@@ -1,4 +1,8 @@
-console.log("hello world");
+let humanScore = 0;
+let computerScore = 0;
+const choices = document.querySelector('.choices');
+const results = document.querySelector('.results');
+const scoreBoard = document.querySelector('#score-board');
 const typeSet = ['rock', 'paper', 'scissors'];
 
 const getComputerChoice = () => {
@@ -39,26 +43,39 @@ const pend = (humanChoice, computerChoice) => {
   }
 };
 
-let humanScore = 0;
-let computerScore = 0;
+
 
 const playRound = (humanChoice, computerChoice) => {
   const res = pend(humanChoice, computerChoice);
+  let resultText = '';
   if (res === -1) {
-    console.log(`You Lose! ${computerChoice} beats ${humanChoice}`);
+    resultText = `You Lose! ${computerChoice} beats ${humanChoice}`;
     computerScore++;
   } else if (res === 0) {
-    console.log(`Tie! Both ${humanChoice}`);
+    resultText = `Tie! Both ${humanChoice}`;
   } else {
-    console.log(`You Win! ${humanChoice} beats ${computerChoice}`);
+    resultText = `You Win! ${humanChoice} beats ${computerChoice}`;
     humanScore++;
   }
 
-  console.log(`score now, human-${humanScore}:computer-${computerScore}`);
+  scoreBoard.textContent= `score now, human-${humanScore}:computer-${computerScore}`;
+
+  const result = document.createElement('p');
+  result.textContent = resultText;
+  results.appendChild(result);
+  
+  if (humanScore >= 5 || computerScore >= 5) {
+    const winner = humanScore >= 5 ? 'You win!' : 'Computer win!';
+    scoreBoard.textContent += '=====' + winner + '=====';
+    const btnList = document.querySelectorAll('.choices button');
+    for (btn of btnList) {
+      btn.disabled = true;
+    }
+  }
 };
 
 const playGame = () => {
-  for (let i = 1; i <= 5; i++){
+  for (let i = 1; i <= 5; i++) {
     const humanSelection = getHumanChoice().toLowerCase();
     const computerSelection = getComputerChoice();
 
@@ -74,4 +91,11 @@ const playGame = () => {
   }
 }
 
-playGame();
+
+choices.addEventListener('click', (event) => {
+  if (event.target.tagName === 'BUTTON') {
+    const btn = event.target;
+    console.dir(btn);
+    playRound(btn.id, getComputerChoice())
+  }
+})
